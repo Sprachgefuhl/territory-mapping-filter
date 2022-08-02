@@ -1,0 +1,31 @@
+* {
+  margin: 5px;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #eee;
+  font-family: 'Abel';
+}
+
+input {
+  font-size: 15px;
+  /* margin-bottom: 20px; */
+}
+
+label {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+button {
+  font-size: 17px;
+  padding: 8px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #ccc;
+}
