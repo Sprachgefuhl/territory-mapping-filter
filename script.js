@@ -120,8 +120,7 @@ const suburbData = [
     id: 'SY'
   },
 ];
-let mainFile;
-
+let masterFile;
 renderSuburbSelection();
 
 function readFile() {
@@ -132,40 +131,28 @@ function readFile() {
     const json = JSON.parse(reader.result);
     JSON.stringify(json);
 
-    mainFile = json;
+    masterFile = json;
   });
 
   reader.readAsText(file);
 }
 
-function renderSuburbSelection() {
-  const container = document.querySelector('.suburb-container');
-
-  for (let i = 0; i < suburbData.length; i++) {
-    const label = document.createElement('label');
-    label.innerText = suburbData[i].name;
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.id = suburbData[i].id;
-
-    const lineBreak = document.createElement('br');
-
-    container.append(label);
-    container.append(checkbox);
-    container.append(lineBreak);
-  }
-}
-
 function filterFeatures(suburbsToKeep) {
+  var file = document.getElementById('upload-file').files[0];
+  if (file == undefined) {
+    document.getElementById('error').innerText = 'Please select a file';
+    document.getElementById('error').style.color = 'red';
+    return;
+  }
+
   let filteredFeatures = [];
 
-  for (let i = 0; i < mainFile['features'].length; i++) {
-    const featureSuburb = mainFile['features'][i]['properties']['map'].slice(0, 2);
+  for (let i = 0; i < masterFile['features'].length; i++) {
+    const featureSuburb = masterFile['features'][i]['properties']['map'].slice(0, 2);
 
     for (let j = 0; j < suburbsToKeep.length; j++) {
       if (featureSuburb.toUpperCase() === suburbsToKeep[j].toUpperCase()) {
-        filteredFeatures.push(mainFile['features'][i]);
+        filteredFeatures.push(masterFile['features'][i]);
       }
     }
   }
@@ -184,19 +171,68 @@ function downloadFiltered(features) {
 
   var blob = new Blob([JSON.stringify(data)], { type: "text/plain;charset=utf-8" });
   saveAs(blob, "Filtered Block Numbers.geojson");
+
+  location.reload();
 }
 
+function renderSuburbSelection() {
+  const container = document.querySelector('.suburb-container');
+
+  for (let i = 0; i < suburbData.length; i++) {
+    const label = document.createElement('label');
+    label.innerText = suburbData[i].name;
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = suburbData[i].id;
+    checkbox.className = 'checkbox';
+
+    const lineBreak = document.createElement('br');
+
+    container.append(label);
+    container.append(checkbox);
+    container.append(lineBreak);
+  }
+}
+
+function selectCheckboxes() {
+  const selectAllEl = document.getElementById('select-all');
+  const checkboxes = document.querySelectorAll('.checkbox');
+
+  if (selectAllEl.checked) {
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = true;
+    });
+
+    document.getElementById('deselect-all').checked = false;
+    console.log('checked');
+  }
+}
+
+function deselectCheckboxes() {
+  const deselectAllEl = document.getElementById('deselect-all');
+  const checkboxes = document.querySelectorAll('.checkbox');
+
+  if (deselectAllEl.checked) {
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = false;
+    });
+
+    document.getElementById('select-all').checked = false;
+  }
+}
+
+document.getElementById('upload-file').addEventListener('change', readFile, false);
+
 document.getElementById('filter').addEventListener('click', () => {
-  const inputs = document.getElementsByTagName('input');
+  const checkboxes = document.querySelectorAll('.checkbox');
   let suburbsToKeep = [];
 
-  for (let i = 1; i < inputs.length; i++) {
-    if (inputs[i].checked) {
-      suburbsToKeep.push(inputs[i].id);
+  for (let i = 0; i < checkboxes.length; i++) {
+    if (checkboxes[i].checked) {
+      suburbsToKeep.push(checkboxes[i].id);
     }
   }
 
   filterFeatures(suburbsToKeep);
 });
-
-document.getElementById('upload-file').addEventListener('change', readFile, false);
