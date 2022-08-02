@@ -14,9 +14,17 @@
 
   <h2>Choose suburbs to keep:</h2>
 
-  <div class="suburb-container"></div>
+  <div class="suburb-container" style="margin-bottom: 20px;"></div>
 
-  <button id="filter" style="margin-top: 20px;">Download</button>
+  <label>Select all</label>
+  <input type="checkbox" id="select-all" onclick="selectCheckboxes()"><br>
+
+  <label>Deselect all</label>
+  <input type="checkbox" id="deselect-all" onclick="deselectCheckboxes()"><br>
+
+  <button id="filter" style="margin-top: 20px;">Download</button><br><br>
+
+  <span id="error"></span>
 
   <script src="script.js"></script>
 </body>
