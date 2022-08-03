@@ -119,6 +119,10 @@ const suburbData = [
     name: 'Symonston',
     id: 'SY'
   },
+  {
+    name: 'Rurals',
+    id: 'ZR'
+  },
 ];
 let masterFile;
 renderSuburbSelection();
@@ -137,27 +141,25 @@ function readFile() {
   reader.readAsText(file);
 }
 
-function filterFeatures(suburbsToKeep) {
-  var file = document.getElementById('upload-file').files[0];
-  if (file == undefined) {
-    document.getElementById('error').innerText = 'Please select a file';
-    document.getElementById('error').style.color = 'red';
-    return;
-  }
-
-  let filteredFeatures = [];
+function filterDataBySuburb(suburbsToKeep) {
+  let filteredData = [];
+  let element;
 
   for (let i = 0; i < masterFile['features'].length; i++) {
-    const featureSuburb = masterFile['features'][i]['properties']['map'].slice(0, 2);
+    if (!masterFile['features'][0]['properties'].hasOwnProperty('map')) {
+      element = masterFile['features'][i]['properties']['name'].slice(0, 2);
+    } else {
+      element = masterFile['features'][i]['properties']['map'].slice(0, 2);
+    }
 
     for (let j = 0; j < suburbsToKeep.length; j++) {
-      if (featureSuburb.toUpperCase() === suburbsToKeep[j].toUpperCase()) {
-        filteredFeatures.push(masterFile['features'][i]);
+      if (element.toUpperCase() === suburbsToKeep[j].toUpperCase()) {
+        filteredData.push(masterFile['features'][i]);
       }
     }
   }
 
-  const unique = [...new Set(filteredFeatures)];
+  const unique = [...new Set(filteredData)];
   downloadFiltered(unique);
 }
 
@@ -170,7 +172,7 @@ function downloadFiltered(features) {
   data.features = features;
 
   var blob = new Blob([JSON.stringify(data)], { type: "text/plain;charset=utf-8" });
-  saveAs(blob, "Filtered Block Numbers.geojson");
+  saveAs(blob, "Filtered Data.geojson");
 
   location.reload();
 }
@@ -222,10 +224,17 @@ function deselectCheckboxes() {
   }
 }
 
-document.getElementById('upload-file').addEventListener('change', readFile, false);
-
 document.getElementById('filter').addEventListener('click', () => {
   const checkboxes = document.querySelectorAll('.checkbox');
+  const dataType = document.getElementById('data-type').value;
+
+  var file = document.getElementById('upload-file').files[0];
+  if (file == undefined) {
+    document.getElementById('error').innerText = 'Please select a file';
+    document.getElementById('error').style.color = 'red';
+    return;
+  }
+
   let suburbsToKeep = [];
 
   for (let i = 0; i < checkboxes.length; i++) {
@@ -234,5 +243,10 @@ document.getElementById('filter').addEventListener('click', () => {
     }
   }
 
-  filterFeatures(suburbsToKeep);
+  if (dataType === 'b-boundries') {
+    // filter especially for b-boundries
+  } else {
+    filterDataBySuburb(suburbsToKeep);
+  }
 });
+document.getElementById('upload-file').addEventListener('change', readFile, false);

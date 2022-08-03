@@ -8,11 +8,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Abel' rel='stylesheet'>
   <link rel="stylesheet" href="style.css">
-  <title>Block Numbering Filter</title>
+  <title>Territory Mapping Filter</title>
 </head>
 
 <body>
-  <input type="file" id="upload-file" accept=".geojson">
+  <label for="data-type">Select Data Type:</label>
+  <select name="data-type" id="data-type">
+    <option value="t-boundaries">Territory Boundaries</option>
+    <option value="t-numbers">Territory Numbers</option>
+    <!-- <option value="b-boundaries">Block Boundaries</option> -->
+    <option value="b-numbers">Block Numbers</option>
+  </select>
+
+  <input type="file" id="upload-file" accept=".geojson"><br>
 
   <h2>Choose suburbs to keep:</h2>
 

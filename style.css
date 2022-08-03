@@ -8,11 +8,6 @@ body {
   font-family: 'Abel';
 }
 
-input {
-  font-size: 15px;
-  /* margin-bottom: 20px; */
-}
-
 label {
   font-size: 20px;
   font-weight: bold;
@@ -21,11 +16,32 @@ label {
 button {
   font-size: 17px;
   padding: 8px;
-  border: 1px solid #000;
+  border: 2px solid #000;
   border-radius: 5px;
   transition: all 0.3s ease;
 }
 
 button:hover {
   background-color: #ccc;
+}
+
+select {
+  padding: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  border: 2px solid #000;
+  border-radius: 5px;
+  background-color: #e6e6e6;
+}
+
+select:focus {
+  outline-style: none;
+}
+
+option {
+  font-size: 15px;
+}
+
+#upload-file {
+  font-size: 18px;
 }
