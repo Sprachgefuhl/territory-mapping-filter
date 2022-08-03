@@ -163,6 +163,26 @@ function filterDataBySuburb(suburbsToKeep) {
   downloadFiltered(unique);
 }
 
+function blockBoundaries(suburbsToKeep) {
+  let filteredData = [];
+
+  for (let i = 0; i < masterFile['features'].length; i++) {
+    if (masterFile['features'][i]['geometry']['type'] === 'Point') {
+      const element = masterFile['features'][i]['properties']['map'].slice(0, 2);
+
+      for (let j = 0; j < suburbsToKeep.length; j++) {
+        if (element.toUpperCase() === suburbsToKeep[j].toUpperCase()) {
+          filteredData.push(masterFile['features'][i]);
+        }
+      }
+    } else if (masterFile['features'][i]['geometry']['type'] === 'Polygon') {
+      filteredData.push(masterFile['features'][i]);
+    }
+  }
+
+  downloadFiltered(filteredData);
+}
+
 function downloadFiltered(features) {
   let data = {
     type: "FeatureCollection",
@@ -173,8 +193,6 @@ function downloadFiltered(features) {
 
   var blob = new Blob([JSON.stringify(data)], { type: "text/plain;charset=utf-8" });
   saveAs(blob, "Filtered Data.geojson");
-
-  location.reload();
 }
 
 function renderSuburbSelection() {
@@ -207,7 +225,6 @@ function selectCheckboxes() {
     });
 
     document.getElementById('deselect-all').checked = false;
-    console.log('checked');
   }
 }
 
@@ -230,10 +247,12 @@ document.getElementById('filter').addEventListener('click', () => {
 
   var file = document.getElementById('upload-file').files[0];
   if (file == undefined) {
-    document.getElementById('error').innerText = 'Please select a file';
+    document.getElementById('error').innerText = 'Please choose a file';
     document.getElementById('error').style.color = 'red';
     return;
   }
+
+  document.getElementById('error').innerText = '';
 
   let suburbsToKeep = [];
 
@@ -243,10 +262,7 @@ document.getElementById('filter').addEventListener('click', () => {
     }
   }
 
-  if (dataType === 'b-boundries') {
-    // filter especially for b-boundries
-  } else {
-    filterDataBySuburb(suburbsToKeep);
-  }
+  if (dataType === 'b-boundaries') blockBoundaries(suburbsToKeep);
+  else filterDataBySuburb(suburbsToKeep);
 });
 document.getElementById('upload-file').addEventListener('change', readFile, false);
