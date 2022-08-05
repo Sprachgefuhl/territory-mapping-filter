@@ -112,8 +112,8 @@ const suburbData = [
     id: 'KI'
   },
   {
-    name: 'Curtin',
-    id: 'CU'
+    name: 'Griffith',
+    id: 'GR'
   },
   {
     name: 'Symonston',
@@ -197,6 +197,8 @@ function downloadFiltered(features) {
 
 function renderSuburbSelection() {
   const container = document.querySelector('.suburb-container');
+
+  suburbData.sort((a, b) => a.name.localeCompare(b.name))
 
   for (let i = 0; i < suburbData.length; i++) {
     const label = document.createElement('label');
